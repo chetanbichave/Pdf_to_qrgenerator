@@ -1,35 +1,62 @@
 import qrcode
 from PIL import Image
 
-data = "https://bit.ly/3T3a1gD"
+resumelnk = input("Enter Your Resume Link : ")
+linkedinlnk = input("Enter Your Linkedin URL : ")
+githublnk = input("Enter Your Github URL : ")
 
-Logo1 = "Logo1.png"
-Logo2 = "Logo2.png"
-Logo3 = "Logo3.png"
-Logo4 = "Logo4.png"
+Logo1 = "logo.png"
+linkedin = "Linkedin.png"
+github = "github.png"
 
-logo = Image.open(Logo1)
-basewidth = 90
 
-QRcode = qrcode.QRCode(
+
+logolist = [Logo1,linkedin,github]
+linksList = [resumelnk,linkedinlnk,githublnk]
+
+for logo in logolist:
+
+    logosindex = logolist.index(logo)
+    print(logosindex)
+    logos = Image.open(logo)
+    basewidth = 20
+    #logo = Image.open(Logo_link)
+
+    wpercent = (basewidth / float(logos.size[0]))
+    hsize = int((float(logos.size[1]) * float(wpercent)))
+    logos = logos.resize((basewidth, hsize))
+
+    QRcode = qrcode.QRCode(
+        version=1,
+        box_size=2,
+        border=1,
     error_correction=qrcode.constants.ERROR_CORRECT_H
-)
+    )
 
-QRcode.add_data(data)
+    #for links in linksList:
+    linksName = linksList[logosindex]
+    print("Link is : ",linksName)
+    QRcode.add_data(linksName)
+    #print(QRcode.add_data(linksName))
+    QRcode.make(fit=True)
+    img = QRcode.make_image(
+    fill_color="Grey", back_color="white").convert('RGB')
 
+    # set size of QR code
+    pos = ((img.size[0] - logos.size[0]) // 2,
+            (img.size[1] - logos.size[1]) // 2)
+    img.paste(logos, pos)
 
-QRcode.make(fit=True)
+    print("Logo Name : = " ,logo)
+    # save the QR code generated
+    if logo == "logo.png":
+        img.save("Resume.png")
+    elif logo == "Linkedin.png":
+        img.save("LinkedinQR.png")
+    elif logo == "github.png":
+        img.save("GithubQR.png")
+    else :
+        print("error")
 
-img = QRcode.make_image(
-    fill_color="Blue", back_color="white").convert('RGB')
-
-# set size of QR code
-pos = ((img.size[0] - logo.size[0]) // 2,
-       (img.size[1] - logo.size[1]) // 2)
-img.paste(logo, pos)
-
-# save the QR code generated
-img.save('MyResume.png')
-
-print('QR code generated!')
+    print('QR code generated!')
 
